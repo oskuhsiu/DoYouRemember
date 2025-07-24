@@ -1,0 +1,40 @@
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="24dp"
+    android:height="24dp"
+    android:viewportWidth="24"
+    android:viewportHeight="24">
+    <!-- Bear body -->
+    <path
+        android:fillColor="#8D6E63"
+        android:pathData="M12,17c3.5,0 6,-2.5 6,-5.5s-2.5,-5.5 -6,-5.5 -6,2.5 -6,5.5 2.5,5.5 6,5.5z"/>
+    <!-- Bear ears -->
+    <path
+        android:fillColor="#6D4C41"
+        android:pathData="M9,8c-1,0 -1.5,-1 -1.5,-2s0.5,-1.5 1.5,-1.5 1.5,0.5 1.5,1.5 -0.5,2 -1.5,2z"/>
+    <path
+        android:fillColor="#6D4C41"
+        android:pathData="M15,8c1,0 1.5,-1 1.5,-2s-0.5,-1.5 -1.5,-1.5 -1.5,0.5 -1.5,1.5 0.5,2 1.5,2z"/>
+    <!-- Inner ears -->
+    <path
+        android:fillColor="#A1887F"
+        android:pathData="M9,7c-0.5,0 -0.8,-0.5 -0.8,-1s0.3,-0.8 0.8,-0.8 0.8,0.3 0.8,0.8 -0.3,1 -0.8,1z"/>
+    <path
+        android:fillColor="#A1887F"
+        android:pathData="M15,7c0.5,0 0.8,-0.5 0.8,-1s-0.3,-0.8 -0.8,-0.8 -0.8,0.3 -0.8,0.8 0.3,1 0.8,1z"/>
+    <!-- Bear snout -->
+    <path
+        android:fillColor="#A1887F"
+        android:pathData="M12,13c1.2,0 2,0.8 2,1.5s-0.8,1.2 -2,1.2 -2,-0.5 -2,-1.2 0.8,-1.5 2,-1.5z"/>
+    <!-- Bear eyes -->
+    <path
+        android:fillColor="#212121"
+        android:pathData="M10.5,10c0,0.4 0.22,0.7 0.5,0.7s0.5,-0.3 0.5,-0.7 -0.22,-0.7 -0.5,-0.7 -0.5,0.3 -0.5,0.7z"/>
+    <path
+        android:fillColor="#212121"
+        android:pathData="M12.5,10c0,0.4 0.22,0.7 0.5,0.7s0.5,-0.3 0.5,-0.7 -0.22,-0.7 -0.5,-0.7 -0.5,0.3 -0.5,0.7z"/>
+    <!-- Bear nose -->
+    <path
+        android:fillColor="#212121"
+        android:pathData="M12,14l-0.4,0.3 0.4,0.4 0.4,-0.4z"/>
+</vector>
+
