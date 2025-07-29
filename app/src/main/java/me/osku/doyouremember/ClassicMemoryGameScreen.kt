@@ -23,7 +23,7 @@ import kotlinx.coroutines.delay
 import me.osku.doyouremember.ui.theme.*
 
 @Composable
-fun ClassicGameEntry(onBack: () -> Unit) {
+fun ClassicGameEntry(onBack: () -> Unit, briefReveal: Boolean) {
     val difficulties = listOf(
         DifficultyLevel("簡單", "4x2格（8張卡） 無限時", "適合幼童"),
         DifficultyLevel("普通", "4x4格（16張卡） 120秒", "適合學齡前兒童"),
@@ -63,12 +63,12 @@ fun ClassicGameEntry(onBack: () -> Unit) {
             ) { Text("返回主選單") }
         }
     } else {
-        ClassicMemoryGame(difficulty = selected, onBack = { selected = -1 })
+        ClassicMemoryGame(difficulty = selected, onBack = { selected = -1 }, briefReveal = briefReveal)
     }
 }
 
 @Composable
-fun ClassicMemoryGame(difficulty: Int, onBack: () -> Unit) {
+fun ClassicMemoryGame(difficulty: Int, onBack: () -> Unit, briefReveal: Boolean) {
     val gridInfo = listOf(
         Pair(4 to 2, 4),
         Pair(4 to 4, 8),
@@ -94,13 +94,32 @@ fun ClassicMemoryGame(difficulty: Int, onBack: () -> Unit) {
         val nums = (1..pairCount).toList()
         (nums + nums).shuffled()
     }
+
+    // 短暫開牌相關狀態
+    var isInBriefReveal by remember { mutableStateOf(briefReveal) }
+    var briefRevealTimeLeft by remember { mutableStateOf(if (briefReveal) cards.size * 0.05f else 0f) }
+
     var pendingFlipBack by remember { mutableStateOf<Pair<Int, Int>?>(null) }
-    var flipped by remember { mutableStateOf(List(cards.size) { false }) }
+    var flipped by remember { mutableStateOf(List(cards.size) { briefReveal }) } // 如果開啟短暫開牌，初始全部翻開
     var matched by remember { mutableStateOf(List(cards.size) { false }) }
     var selectedIdx by remember { mutableStateOf<Int?>(null) }
-    var lock by remember { mutableStateOf(false) }
+    var lock by remember { mutableStateOf(briefReveal) } // 短暫開牌時鎖定操作
     var score by remember { mutableStateOf(0) }
     var flipCount by remember { mutableStateOf(0) }
+
+    // 短暫開牌倒數計時
+    LaunchedEffect(isInBriefReveal) {
+        if (isInBriefReveal && briefRevealTimeLeft > 0) {
+            while (briefRevealTimeLeft > 0) {
+                delay(50L) // 每50毫秒更新一次
+                briefRevealTimeLeft -= 0.05f
+            }
+            // 時間到，關閉所有牌
+            flipped = List(cards.size) { false }
+            lock = false
+            isInBriefReveal = false
+        }
+    }
 
     val screenWidth = configuration.screenWidthDp.dp
     val screenHeight = configuration.screenHeightDp.dp
@@ -118,6 +137,16 @@ fun ClassicMemoryGame(difficulty: Int, onBack: () -> Unit) {
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Text("[經典記憶翻卡 遊戲主畫面]", color = Color.White)
+
+        // 顯示倒數計時（如果在短暫開牌階段）
+        if (isInBriefReveal) {
+            Text(
+                "記住牌面位置！剩餘 ${String.format("%.1f", briefRevealTimeLeft)} 秒",
+                color = Color.Yellow,
+                modifier = Modifier.padding(4.dp)
+            )
+        }
+
         Text(
             "${cols}x${rows}格  共${pairCount * 2}張卡  分數：$score  翻牌次數：$flipCount",
             color = Color.White,
@@ -151,8 +180,8 @@ fun ClassicMemoryGame(difficulty: Int, onBack: () -> Unit) {
                                             rotationY = rotation
                                             cameraDistance = 8 * density
                                         }
-                                        .clickable(enabled = !isFlipped && !lock) {
-                                            if (lock) return@clickable
+                                        .clickable(enabled = !isFlipped && !lock && !isInBriefReveal) {
+                                            if (lock || isInBriefReveal) return@clickable
                                             val newFlipped = flipped.toMutableList()
                                             newFlipped[idx] = true
                                             flipped = newFlipped

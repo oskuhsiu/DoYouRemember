@@ -42,11 +42,11 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
-            val prefs = getSharedPreferences("settings", Context.MODE_PRIVATE)
+            val prefsManager = remember { PreferencesManager(this@MainActivity) }
             var screen by remember { mutableStateOf(MainScreen.MENU) }
-            var seqCardType by remember {
-                mutableStateOf(prefs.getString("seqCardType", "數字牌") ?: "數字牌")
-            }
+            var seqCardType by remember { mutableStateOf(prefsManager.seqCardType) }
+            var briefReveal by remember { mutableStateOf(prefsManager.briefReveal) }
+
             Surface(modifier = Modifier.fillMaxSize()) {
                 when (screen) {
                     MainScreen.MENU -> MainMenu(
@@ -55,7 +55,10 @@ class MainActivity : ComponentActivity() {
                         onExit = { screen = MainScreen.EXIT },
                         onSeqMemory = { screen = MainScreen.SEQMEMORY }
                     )
-                    MainScreen.GAME -> ClassicGameEntry(onBack = { screen = MainScreen.MENU })
+                    MainScreen.GAME -> ClassicGameEntry(
+                        onBack = { screen = MainScreen.MENU },
+                        briefReveal = briefReveal
+                    )
                     MainScreen.SEQMEMORY -> SequenceMemoryEntry(
                         onBack = { screen = MainScreen.MENU },
                         cardType = seqCardType
@@ -65,7 +68,12 @@ class MainActivity : ComponentActivity() {
                         seqCardType = seqCardType,
                         onSeqCardTypeChange = {
                             seqCardType = it
-                            prefs.edit().putString("seqCardType", it).apply()
+                            prefsManager.seqCardType = it
+                        },
+                        briefReveal = briefReveal,
+                        onBriefRevealChange = {
+                            briefReveal = it
+                            prefsManager.briefReveal = it
                         }
                     )
                     MainScreen.EXIT -> ExitApp()

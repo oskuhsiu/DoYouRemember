@@ -16,7 +16,9 @@ import me.osku.doyouremember.ui.theme.MainRed
 fun SettingsScreen(
     onBack: () -> Unit,
     seqCardType: String,
-    onSeqCardTypeChange: (String) -> Unit
+    onSeqCardTypeChange: (String) -> Unit,
+    briefReveal: Boolean,
+    onBriefRevealChange: (Boolean) -> Unit
 ) {
     Column(
         modifier = Modifier
@@ -26,6 +28,27 @@ fun SettingsScreen(
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Text("設定", color = MainRed, modifier = Modifier.padding(bottom = 24.dp))
+
+        // 短暫開牌設定
+        Text("遊戲開始時短暫顯示所有牌面：", color = Color.White, modifier = Modifier.padding(8.dp))
+        Row(modifier = Modifier.padding(8.dp)) {
+            listOf("開啟" to true, "關閉" to false).forEach { (text, value) ->
+                Button(
+                    onClick = { onBriefRevealChange(value) },
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = if (briefReveal == value) MainGreen else Color.White
+                    ),
+                    shape = androidx.compose.foundation.shape.RoundedCornerShape(16.dp),
+                    modifier = Modifier.padding(horizontal = 8.dp)
+                ) {
+                    Text(
+                        text,
+                        color = if (briefReveal == value) Color.White else MainGreen
+                    )
+                }
+            }
+        }
+
 //        Text("序列記憶牌面：", color = Color.White)
 //        Row(modifier = Modifier.padding(8.dp)) {
 //            listOf("數字牌", "動物牌").forEach { type ->
