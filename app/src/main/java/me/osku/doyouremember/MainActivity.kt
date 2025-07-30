@@ -1,14 +1,11 @@
 package me.osku.doyouremember
 
-import android.content.Context
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -21,9 +18,6 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalConfiguration
-import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import me.osku.doyouremember.ui.theme.DoYouRememberTheme
@@ -34,7 +28,7 @@ import me.osku.doyouremember.ui.theme.MainYellow
 import androidx.compose.foundation.shape.RoundedCornerShape
 
 enum class MainScreen {
-    MENU, GAME, SETTINGS, EXIT, SEQMEMORY
+    MENU, GAME, SETTINGS, EXIT, SEQMEMORY, MEMORY_CHAIN
 }
 
 class MainActivity : ComponentActivity() {
@@ -53,7 +47,8 @@ class MainActivity : ComponentActivity() {
                         onStart = { screen = MainScreen.GAME },
                         onSettings = { screen = MainScreen.SETTINGS },
                         onExit = { screen = MainScreen.EXIT },
-                        onSeqMemory = { screen = MainScreen.SEQMEMORY }
+                        onSeqMemory = { screen = MainScreen.SEQMEMORY },
+                        onMemoryChain = { screen = MainScreen.MEMORY_CHAIN }
                     )
                     MainScreen.GAME -> ClassicGameEntry(
                         onBack = { screen = MainScreen.MENU },
@@ -62,6 +57,9 @@ class MainActivity : ComponentActivity() {
                     MainScreen.SEQMEMORY -> SequenceMemoryEntry(
                         onBack = { screen = MainScreen.MENU },
                         cardType = seqCardType
+                    )
+                    MainScreen.MEMORY_CHAIN -> MemoryChainEntry(
+                        onBack = { screen = MainScreen.MENU }
                     )
                     MainScreen.SETTINGS -> SettingsScreen(
                         onBack = { screen = MainScreen.MENU },
@@ -84,7 +82,7 @@ class MainActivity : ComponentActivity() {
 }
 
 @Composable
-fun MainMenu(onStart: () -> Unit, onSettings: () -> Unit, onExit: () -> Unit, onSeqMemory: () -> Unit) {
+fun MainMenu(onStart: () -> Unit, onSettings: () -> Unit, onExit: () -> Unit, onSeqMemory: () -> Unit, onMemoryChain: () -> Unit) {
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -109,6 +107,14 @@ fun MainMenu(onStart: () -> Unit, onSettings: () -> Unit, onExit: () -> Unit, on
                 .fillMaxWidth(0.7f)
                 .padding(8.dp)
         ) { Text("序列記憶") }
+        Button(
+            onClick = onMemoryChain,
+            colors = ButtonDefaults.buttonColors(containerColor = MainRed),
+            shape = RoundedCornerShape(16.dp),
+            modifier = Modifier
+                .fillMaxWidth(0.7f)
+                .padding(8.dp)
+        ) { Text("記憶連鎖") }
         Button(
             onClick = onSettings,
             colors = ButtonDefaults.buttonColors(containerColor = MainRed),
@@ -139,6 +145,6 @@ fun ExitApp() {
 @Composable
 fun GreetingPreview() {
     DoYouRememberTheme {
-        MainMenu({}, {}, {}, {})
+        MainMenu({}, {}, {}, {}, {})
     }
 }
